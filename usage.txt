@@ -1,0 +1,35 @@
+[content]
+¥privateprofile.vbs	definition of getprivateprofile and writeprivateprofile
+¥privateprofile.wsf	test script for verifing getprivateprofile and writeprivateprofile
+
+[verification procedure]
+cscript privateprofile.wsf [-r/w] [target_ini_file] [SECTION] [KEY] [DATA]
+ex) { create target.ini with section:SECTION_1ST, key:KEY_A, data:VALUE_1. and display all ini-file. }
+    cscript /nologo privateprofile.wsf -w target.ini SECTION_1ST KEY_A VALUE_1
+    cscript /nologo privateprofile.wsf -r target.ini
+
+	[SECTION_1ST]
+		KEY_A=VALUE_1
+
+ex) { append section:SECTION_1ST, key:KEY_B, data:VALUE_2 to target.ini. and display section:SECTION_1ST of target.ini. }
+    cscript /nologo privateprofile.wsf -w target.ini SECTION_1ST KEY_B " VALUE_2 "
+    cscript /nologo privateprofile.wsf -r target.ini SECTION_1ST
+
+	KEY_A=VALUE_1
+	KEY_B= VALUE_2 
+
+ex) { delete section:SECTION_1ST, key:KEY_A of target.ini. and display section:SECTION_1ST of target.ini. }
+    cscript /nologo privateprofile.wsf -w target.ini SECTION_1ST KEY_A
+    cscript /nologo privateprofile.wsf -r target.ini SECTION_1ST
+
+	KEY_B= VALUE_2 
+
+ex) { append section:SECTION_2ND, key:KEY_A, data:VALUE_1 to target.ini.
+      and delete section:SECTION_1ST of target.ini. and display all ini-file. }
+    cscript /nologo privateprofile.wsf -w target.ini SECTION_2ND KEY_A VALUE_1
+    cscript /nologo privateprofile.wsf -w target.ini SECTION_1ST
+    cscript /nologo privateprofile.wsf -r target.ini
+
+	[SECTION_2ND]
+		KEY_A=VALUE_1
+

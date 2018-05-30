@@ -1,0 +1,54 @@
+<job id="privateprofile">
+<comment>getprivateprofile/writeprivateprofile verification program</comment>
+<script language="VBScript" src="privateprofile.vbs"/>
+<script language="VBScript">
+on error resume next
+
+if 1 < wscript.arguments.count then
+	dim cmd
+	cmd = lcase(replace(wscript.arguments(0), "-", "/"))
+	if cmd = "/w" then
+		if 4 < wscript.arguments.count then
+			WritePrivateProfile wscript.arguments(1), wscript.arguments(2), wscript.arguments(3), wscript.arguments(4)
+		elseif 3 < wscript.arguments.count then
+			WritePrivateProfile wscript.arguments(1), wscript.arguments(2), wscript.arguments(3), null
+		elseif 2 < wscript.arguments.count then
+			WritePrivateProfile wscript.arguments(1), wscript.arguments(2), null, null
+		end if
+	elseif cmd = "/r" then
+		dim objProfile, objSection, section, name
+		if 3 < wscript.arguments.count then
+			name = GetPrivateProfile(wscript.arguments(1), wscript.arguments(2), wscript.arguments(3))
+			if not isnull(name) then
+				wscript.echo name
+			else
+				wscript.echo "[" & wscript.arguments(2) & "]" & wscript.arguments(3) & " is not exists."
+			end if
+		elseif 2 < wscript.arguments.count then
+			set objSection = GetPrivateProfile(wscript.arguments(1), wscript.arguments(2), null)
+			if not objSection is nothing then
+				for each name in objSection.keys
+					wscript.echo name & "=" & objSection(name)
+				next
+			else
+				wscript.echo "[" & wscript.arguments(2) & "] is not exists."
+			end if
+		elseif 1 < wscript.arguments.count then
+			set objProfile = GetPrivateProfile(wscript.arguments(1), null, null)
+			if not objProfile is nothing then
+				for each section in objProfile.keys
+					wscript.echo "[" & section & "]"
+					set objSection = objProfile(section)
+					for each name in objSection.keys
+						wscript.echo "	" & name & "=" & objSection(name)
+					next
+				next
+			end if
+		end if
+	end if
+else
+	wscript.echo "cscript privateprofile.wsf [-r/w] [target_ini_file] [SECTION] [KEY] [DATA]"
+	wscript.echo "ex) cscript privateprofile.wsf test.ini POLICY First ON"
+end if
+</script>
+</job>
